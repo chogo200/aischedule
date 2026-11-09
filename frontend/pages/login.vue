@@ -17,7 +17,7 @@
                 v-model="password"
                 label="Password"
                 :type="showPw ? 'text' : 'password'"
-                :append-inner-icon="show ? 'mdi-eye-off' : 'mdi-eye'"
+                :append-inner-icon="showPw ? 'mdi-eye-off' : 'mdi-eye'"
                 @click:append-inner="showPw = !showPw"
                 prepend-inner-icon="mdi-lock-outline"
                 :rules="[r => !!r || 'กรอกรหัสผ่าน']"

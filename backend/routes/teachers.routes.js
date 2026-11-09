@@ -12,6 +12,7 @@ router.put('/:id',    auth('admin'), ctrl.update);
 router.delete('/:id', auth('admin'), ctrl.remove);
 
 /* Teacher Experts */
+router.post('/evaluate-expertise',         auth('admin', 'permis1', 'permis2'), ctrl.evaluateExpertise);
 router.get('/:id/experts',             auth('admin', 'permis1', 'permis2'), ctrl.getExperts);
 router.post('/:id/experts',            auth('admin'), ctrl.addExpert);
 router.put('/:id/experts/:expertId',   auth('admin'), ctrl.updateExpert);

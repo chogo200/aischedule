@@ -11,16 +11,16 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 const { $api } = useNuxtApp()
 
-// Model Selection: รองรับ Qwen, LLaMA, GPT บน Groq และ Gemini
+// Model Selection: โมเดลที่รองรับบน Groq, OpenRouter และ Gemini
 const availableModels = [
-  { value: 'groq-qwen-27b', label: 'Qwen 3.8 27B', provider: 'Groq', desc: 'เร็วมาก ภาษาไทยดี' },
-  { value: 'groq-gpt-120b', label: 'GPT-120B', provider: 'Groq', desc: 'ฉลาดสุด เสถียร' },
-  { value: 'groq-llama-3.3-70b', label: 'LLaMA 3.3 70B', provider: 'Groq', desc: 'โมเดล LLaMA ตัวใหญ่' },
-  { value: 'groq-llama-3.1-8b', label: 'LLaMA 3.1 8B', provider: 'Groq', desc: 'โมเดล LLaMA ตัวเบา' },
+  { value: 'groq-gpt-120b', label: 'GPT-120B (แนะนำ)', provider: 'Groq', desc: 'ฉลาดสุด เสถียร จัดการข้อมูลได้แม่นยำ' },
+  { value: 'groq-gpt-20b', label: 'GPT-20B', provider: 'Groq', desc: 'เร็ว เบา เสถียร' },
+  { value: 'openrouter-nemotron', label: 'Nemotron 3.5 (OpenRouter ฟรี)', provider: 'OpenRouter', desc: 'ฟรี 50 ครั้ง/วัน รองรับ Tool Calling' },
+  { value: 'groq-qwen-27b', label: 'Qwen 3.8 27B', provider: 'Groq', desc: 'ภาษาไทยดี' },
   { value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash', provider: 'Google', desc: 'Google AI Studio' },
   { value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro', provider: 'Google', desc: 'Google AI Studio' },
 ]
-const selectedModel = ref('groq-qwen-27b')
+const selectedModel = ref('groq-gpt-120b')
 
 const inputMessage = ref('')
 const isSending = ref(false)

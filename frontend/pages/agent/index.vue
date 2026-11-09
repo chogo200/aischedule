@@ -4,8 +4,8 @@ import { ref, onMounted, nextTick } from 'vue'
 
 const { $api } = useNuxtApp()
 
-// Provider: 'groq' หรือ 'google'
-const selectedProvider = ref('groq')
+// Provider / Model: 'groq-gpt-120b', 'openrouter-nemotron', หรือ 'google'
+const selectedProvider = ref('groq-gpt-120b')
 
 // Chat state
 const promptInput = ref('')
@@ -49,6 +49,7 @@ async function onSendMessage() {
   try {
     const { data } = await $api.post('/api/agent/chat', {
       message: text,
+      model: selectedProvider.value,
       provider: selectedProvider.value,
     })
 
@@ -100,6 +101,7 @@ async function uploadAndExtractFile() {
 
   const formData = new FormData()
   formData.append('file', selectedFile.value)
+  formData.append('model', selectedProvider.value)
   formData.append('provider', selectedProvider.value)
   formData.append('prompt', 'วิเคราะห์และสกัดข้อมูลเพื่อนำเข้าสู่ระบบจัดตารางสอน')
 
@@ -161,20 +163,33 @@ async function executeBatchImport() {
       </div>
 
       <!-- Provider Selector -->
-      <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-gray-200 shadow-xs">
+      <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-gray-200 shadow-xs flex-wrap">
         <span class="text-xs text-gray-500 font-medium">Model:</span>
         <button
           type="button"
           :class="[
             'text-xs px-2.5 py-1 rounded-lg font-medium transition-all flex items-center gap-1.5 cursor-pointer',
-            selectedProvider === 'groq'
+            selectedProvider === 'groq-gpt-120b'
               ? 'bg-amber-500 text-white shadow-xs'
               : 'text-gray-600 hover:bg-gray-100'
           ]"
-          @click="selectedProvider = 'groq'"
+          @click="selectedProvider = 'groq-gpt-120b'"
         >
           <v-icon icon="mdi-lightning-bolt" size="14" />
-          <span>Groq (LLaMA 3.3)</span>
+          <span>Groq (GPT-120B แนะนำ)</span>
+        </button>
+        <button
+          type="button"
+          :class="[
+            'text-xs px-2.5 py-1 rounded-lg font-medium transition-all flex items-center gap-1.5 cursor-pointer',
+            selectedProvider === 'openrouter-nemotron'
+              ? 'bg-emerald-600 text-white shadow-xs'
+              : 'text-gray-600 hover:bg-gray-100'
+          ]"
+          @click="selectedProvider = 'openrouter-nemotron'"
+        >
+          <v-icon icon="mdi-creation" size="14" />
+          <span>OpenRouter (Nemotron ฟรี)</span>
         </button>
         <button
           type="button"

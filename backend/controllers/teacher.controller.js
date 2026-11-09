@@ -113,4 +113,19 @@ exports.removeExpert = async (req, res, next) => {
   }
 };
 
+exports.evaluateExpertise = async (req, res, next) => {
+  try {
+    const { syncExpertiseToDatabase } = require('../services/ai/antigravityEvaluator');
+    const result = await syncExpertiseToDatabase();
+    res.json({
+      success: true,
+      message: 'ประเมินและบันทึกความเชี่ยวชาญครูโดย Antigravity AI สำเร็จเรียบร้อย',
+      data: result
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
 

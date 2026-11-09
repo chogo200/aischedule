@@ -34,7 +34,11 @@ router.post('/:id/lesson-plans',           auth('admin'), ctrl.createLessonPlan)
 router.put('/:id/lesson-plans/:planId',    auth('admin'), ctrl.updateLessonPlan);
 router.delete('/:id/lesson-plans/:planId', auth('admin'), ctrl.removeLessonPlan);
 
-// 5. Schedules (ตารางสอน AI)
-router.get('/:id/schedules',            auth('admin', 'permis1', 'permis2'), ctrl.getSchedules);
+// 5. Schedules (ตารางสอน)
+const scheduleCtrl = require('../controllers/schedule.controller');
+router.get('/:id/schedules',               auth('admin', 'permis1', 'permis2'), ctrl.getSchedules);
+router.post('/:id/schedules/generate',      auth('admin'), scheduleCtrl.generate);
+router.delete('/:id/schedules',             auth('admin'), scheduleCtrl.clearForProject);
+router.get('/:id/schedules/conflicts',      auth('admin', 'permis1', 'permis2'), scheduleCtrl.checkConflicts);
 
 module.exports = router;

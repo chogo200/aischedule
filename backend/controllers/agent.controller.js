@@ -22,6 +22,29 @@ exports.chat = async (req, res, next) => {
     const result = await runAgent(message.trim(), selectedModel, history);
     res.json({ success: true, ...result });
   } catch (e) {
+    if (e.message && (e.message.includes('API key not found') || e.message.includes('API_KEY'))) {
+      return res.json({
+        success: true,
+        reply: `⚠️ ${e.message}\n\nกรุณาเพิ่ม API Key ลงในไฟล์ \`.env\` ในโฟลเดอร์ \`backend/.env\` หรือ root \`.env\` แล้ว Restart เซิร์ฟเวอร์ครับ`,
+        model: req.body?.model || 'groq-gpt-120b'
+      });
+    }
+    if (e.message && (e.message.includes('tool_use_failed') || e.message.includes('tool call validation failed'))) {
+      return res.json({
+        success: true,
+        reply: `⚠️ โมเดลที่เลือกจัดรูปแบบคำสั่ง (Tool Calling) ผิดพลาด แนะนำให้สลับไปใช้โมเดล **GPT-120B** ในเมนูด้านบน ซึ่งมีความแม่นยำในการจัดการข้อมูลสูงสุดครับ`,
+        model: req.body?.model || 'groq-gpt-120b'
+      });
+    }
+    if (e.status === 429 || (e.message && (e.message.startsWith('429') || e.message.includes('rate_limit') || e.message.includes('Rate limit')))) {
+      const waitMatch = e.message && e.message.match(/try again in ([\d.]+)s/);
+      const waitText = waitMatch ? `ประมาณ ${Math.ceil(Number(waitMatch[1]))} วินาที` : 'สักครู่';
+      return res.json({
+        success: true,
+        reply: `⚠️ โมเดลที่เลือก (${req.body?.model || 'ไม่ระบุ'}) ใช้โควตาฟรีครบแล้ว (Rate limit 429)\n\nทางเลือก:\n• รอ${waitText}แล้วส่งใหม่\n• สลับไปใช้โมเดลอื่นในเมนูด้านบน เช่น **GPT-120B** หรือ **GPT-20B** (Groq) หรือ **Nemotron 3.5** (OpenRouter)`,
+        model: req.body?.model || 'groq-gpt-120b'
+      });
+    }
     next(e);
   }
 };

@@ -17,7 +17,7 @@ services:
         - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
         
       healthcheck:
-        test: ["CMD","mysqladmin","ping","-proot_password"]
+        test: ["CMD","mysqladmin","ping","-prootpassword"]
         interval: 10s
         timeout: 5s
         retries: 10
@@ -34,6 +34,32 @@ services:
     depends_on:
       - db
     networks: [fsnet]
+
+  api:
+    build: ./backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "7000:7000"
+    depends_on:
+      db:
+        condition: service_started
+    networks: [fsnet]
+    volumes:
+      - ./backend/uploads:/app/uploads
+
+  frontend:
+    build: ./frontend
+    environment:
+      NITRO_PORT: 3000
+      NUXT_PUBLIC_API_BASE: http://localhost:7000
+    ports:
+      - "3000:3000"
+     
+    depends_on:
+      - api
+    networks: [fsnet]
+
 volumes:
   db_data:
 

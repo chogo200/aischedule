@@ -126,6 +126,30 @@ const createRoomTool = tool(
   }
 );
 
+// Alias สำหรับ Room / Venue
+const createVenueTool = tool(
+  async ({ name, feature }) => {
+    try {
+      if (/^\d{4}\/\d+$/.test(String(name).trim())) {
+        const created = await projectRepo.create({ name });
+        return JSON.stringify({ success: true, message: `สร้างโครงการ ${name} เรียบร้อย`, data: created });
+      }
+      const created = await roomRepo.create({ name, feature: feature || '' });
+      return JSON.stringify({ success: true, message: `สร้างห้อง/สถานที่ ${name} เรียบร้อย`, data: created });
+    } catch (e) {
+      return JSON.stringify({ success: false, error: e.message });
+    }
+  },
+  {
+    name: 'create_venue',
+    description: 'สร้างห้องเรียน สถานที่ หรือโครงการ (room / venue / project)',
+    schema: z.object({
+      name: z.string().describe('ชื่อห้องเรียน สถานที่ หรือชื่อโครงการ เช่น 2026/1'),
+      feature: z.string().optional().describe('คุณสมบัติห้องเรียน (ถ้ามี)'),
+    }),
+  }
+);
+
 const addRoomExpertTool = tool(
   async ({ room_id, subject_id, expert }) => {
     try {
@@ -365,6 +389,7 @@ const allTools = [
   addTeacherExpertTool,
   listTeachersTool,
   createRoomTool,
+  createVenueTool,
   addRoomExpertTool,
   listRoomsTool,
   createClassTool,

@@ -1,6 +1,7 @@
 <script setup>
 definePageMeta({ layout: 'default' })
 import { ref, onMounted, computed, watch } from 'vue'
+import TimetableSheet from '~/components/TimetableSheet.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -755,6 +756,110 @@ async function loadSchedules() {
   }
 }
 
+// Auto-Scheduler state
+const isGeneratingSchedule = ref(false)
+const isClearingSchedule = ref(false)
+const confirmGenerateDialog = ref(false)
+const confirmClearDialog = ref(false)
+const scheduleResultDialog = ref(false)
+const scheduleResultData = ref(null)
+const scheduleViewMode = ref('class') // 'class' (ตารางเรียนรายห้อง) | 'teacher' (ตารางสอนรายครู) | 'matrix' | 'list'
+const selectedScheduleClassId = ref('all')
+const selectedScheduleTeacherId = ref('all')
+const totalPeriodsSetting = ref(40)
+const periodsPerDaySetting = ref(8)
+
+// Compute unique classes present in schedules or in project
+const scheduleClasses = computed(() => {
+  if (projectClasses.value && projectClasses.value.length > 0) {
+    return projectClasses.value.map(c => ({
+      id: c.class_id,
+      name: c.name_in_project || c.class_name,
+    }))
+  }
+  // Fallback: derive from schedules
+  const map = new Map()
+  schedules.value.forEach(s => {
+    if (s.class_id && !map.has(s.class_id)) {
+      map.set(s.class_id, { id: s.class_id, name: s.class_name || `ชั้น ${s.class_id}` })
+    }
+  })
+  return Array.from(map.values())
+})
+
+// Compute unique teachers in schedules
+const scheduleTeachers = computed(() => {
+  const map = new Map()
+  schedules.value.forEach(s => {
+    if (s.teacher_id && !map.has(s.teacher_id)) {
+      map.set(s.teacher_id, { id: s.teacher_id, name: s.teacher_name || `อาจารย์ ${s.teacher_id}` })
+    }
+  })
+  return Array.from(map.values())
+})
+
+const displayedScheduleClasses = computed(() => {
+  if (selectedScheduleClassId.value === 'all') return scheduleClasses.value
+  return scheduleClasses.value.filter(c => c.id === selectedScheduleClassId.value)
+})
+
+const displayedScheduleTeachers = computed(() => {
+  if (selectedScheduleTeacherId.value === 'all') return scheduleTeachers.value
+  return scheduleTeachers.value.filter(t => t.id === selectedScheduleTeacherId.value)
+})
+
+function getSchedulesForClass(classId) {
+  return schedules.value.filter(s => s.class_id === classId)
+}
+
+function getSchedulesForTeacher(teacherId) {
+  return schedules.value.filter(s => s.teacher_id === teacherId)
+}
+
+// Fast matrix lookup: cellMap[`${period}_${classId}`]
+const scheduleCellMap = computed(() => {
+  const map = new Map()
+  schedules.value.forEach(s => {
+    map.set(`${s.period}_${s.class_id}`, s)
+  })
+  return map
+})
+
+function getCell(period, classId) {
+  return scheduleCellMap.value.get(`${period}_${classId}`)
+}
+
+async function triggerGenerateSchedule() {
+  isGeneratingSchedule.value = true
+  confirmGenerateDialog.value = false
+  try {
+    const { data } = await $api.post(`/api/projects/${projectId.value}/schedules/generate`, {
+      totalPeriods: totalPeriodsSetting.value,
+      periodsPerDay: periodsPerDaySetting.value,
+    })
+    scheduleResultData.value = data.data
+    scheduleResultDialog.value = true
+    await loadSchedules()
+  } catch (e) {
+    errorMsg.value = e.response?.data?.message || e.message || 'จัดตารางเรียนไม่สำเร็จ'
+  } finally {
+    isGeneratingSchedule.value = false
+  }
+}
+
+async function triggerClearSchedule() {
+  isClearingSchedule.value = true
+  confirmClearDialog.value = false
+  try {
+    await $api.delete(`/api/projects/${projectId.value}/schedules`)
+    await loadSchedules()
+  } catch (e) {
+    errorMsg.value = e.response?.data?.message || e.message || 'ลบตารางเรียนไม่สำเร็จ'
+  } finally {
+    isClearingSchedule.value = false
+  }
+}
+
 // สลับแท็บพร้อมอัปเดตลงใน URL Query (ใช้เฉพาะ query)
 function switchTab(tab) {
   activeTab.value = tab
@@ -824,11 +929,23 @@ onMounted(async () => {
         </div>
       </div>
 
-      <NuxtLink to="/project">
-        <v-btn variant="outlined" size="small" prepend-icon="mdi-arrow-left" class="rounded-lg text-none">
-          ย้อนกลับ
+      <div class="flex items-center gap-2">
+        <v-btn
+          color="primary"
+          size="small"
+          prepend-icon="mdi-auto-fix"
+          class="rounded-xl text-none shadow-sm font-semibold px-4"
+          :loading="isGeneratingSchedule"
+          @click="confirmGenerateDialog = true"
+        >
+          จัดตารางเรียนอัตโนมัติ
         </v-btn>
-      </NuxtLink>
+        <NuxtLink to="/project">
+          <v-btn variant="outlined" size="small" prepend-icon="mdi-arrow-left" class="rounded-xl text-none">
+            ย้อนกลับ
+          </v-btn>
+        </NuxtLink>
+      </div>
     </div>
 
     <!-- Error Alert -->
@@ -1616,39 +1733,275 @@ onMounted(async () => {
              SLOT 5: ตารางเรียนที่ AI จัดให้ (Schedules)
              ========================================== -->
         <div v-else-if="activeTab === 'schedules'">
-          <div class="flex items-center justify-between mb-4">
+          <!-- Top Bar: Header & Actions -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between mb-5 gap-3">
             <div>
-              <h2 class="text-sm font-bold text-gray-800">ตารางเรียนที่ AI จัดสรรเรียบร้อยแล้ว</h2>
-              <p class="text-xs text-gray-400">ผลการจัดสรรคาบสอน ชั้นเรียน ห้องเรียน และผู้สอนอัตโนมัติ</p>
+              <div class="flex items-center gap-2">
+                <h2 class="text-sm font-bold text-gray-800">ตารางเรียนในโครงการ</h2>
+                <span class="text-[11px] px-2 py-0.5 rounded-full font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                  {{ schedules.length }} คาบ
+                </span>
+                <span v-if="schedules.length > 0" class="text-[11px] px-2 py-0.5 rounded-full font-semibold bg-green-50 text-green-700 border border-green-200 flex items-center gap-1">
+                  <v-icon icon="mdi-check" size="12" /> ไม่มีคาบซ้อน
+                </span>
+              </div>
+              <p class="text-xs text-gray-400 mt-0.5">
+                จัดตารางอัตโนมัติตามชั้นเรียน ครู ห้องเรียน และแผนการสอน (X = ชั้นเรียน, Y = คาบเรียน)
+              </p>
             </div>
-            <v-chip color="success" size="small" variant="tonal" prepend-icon="mdi-check-circle">
-              AI Auto-Scheduled
-            </v-chip>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2 flex-wrap">
+              <!-- View Mode Toggle -->
+              <div class="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-0.5 shadow-2xs">
+                <button
+                  type="button"
+                  :class="[
+                    'px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer flex items-center gap-1',
+                    scheduleViewMode === 'class' ? 'bg-white text-blue-600 shadow-2xs' : 'text-gray-500 hover:text-gray-700'
+                  ]"
+                  @click="scheduleViewMode = 'class'"
+                >
+                  <v-icon icon="mdi-google-classroom" size="14" />
+                  <span>ตารางเรียนรายห้อง</span>
+                </button>
+                <button
+                  type="button"
+                  :class="[
+                    'px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer flex items-center gap-1',
+                    scheduleViewMode === 'teacher' ? 'bg-white text-teal-600 shadow-2xs' : 'text-gray-500 hover:text-gray-700'
+                  ]"
+                  @click="scheduleViewMode = 'teacher'"
+                >
+                  <v-icon icon="mdi-account-tie" size="14" />
+                  <span>ตารางสอนรายครู</span>
+                </button>
+                <button
+                  type="button"
+                  :class="[
+                    'px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer flex items-center gap-1',
+                    scheduleViewMode === 'matrix' ? 'bg-white text-gray-900 shadow-2xs' : 'text-gray-500 hover:text-gray-700'
+                  ]"
+                  @click="scheduleViewMode = 'matrix'"
+                >
+                  <v-icon icon="mdi-grid" size="14" />
+                  <span>ตารางเมทริกซ์</span>
+                </button>
+                <button
+                  type="button"
+                  :class="[
+                    'px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer flex items-center gap-1',
+                    scheduleViewMode === 'list' ? 'bg-white text-gray-900 shadow-2xs' : 'text-gray-500 hover:text-gray-700'
+                  ]"
+                  @click="scheduleViewMode = 'list'"
+                >
+                  <v-icon icon="mdi-format-list-bulleted" size="14" />
+                  <span>รายการ</span>
+                </button>
+              </div>
+
+              <!-- Clear button (if schedules exist) -->
+              <v-btn
+                v-if="schedules.length > 0"
+                variant="outlined"
+                color="error"
+                size="small"
+                prepend-icon="mdi-delete-sweep-outline"
+                class="rounded-lg text-none"
+                :loading="isClearingSchedule"
+                @click="confirmClearDialog = true"
+              >
+                ล้างตาราง
+              </v-btn>
+
+              <!-- Main Button: จัดตารางเรียน -->
+              <v-btn
+                color="primary"
+                size="small"
+                prepend-icon="mdi-auto-fix"
+                class="rounded-lg text-none shadow-sm font-semibold"
+                :loading="isGeneratingSchedule"
+                @click="confirmGenerateDialog = true"
+              >
+                จัดตารางเรียนอัตโนมัติ
+              </v-btn>
+            </div>
           </div>
 
-          <div v-if="loadingSchedules" class="py-12 text-center">
+          <!-- Filter Bar สำหรับโหมด Class และ Teacher -->
+          <div
+            v-if="schedules.length > 0 && (scheduleViewMode === 'class' || scheduleViewMode === 'teacher')"
+            class="bg-gray-50 border border-gray-200 rounded-xl p-3 mb-4 flex items-center justify-between gap-3 flex-wrap"
+          >
+            <div v-if="scheduleViewMode === 'class'" class="flex items-center gap-2">
+              <label class="text-xs font-semibold text-gray-700 whitespace-nowrap">เลือกชั้นเรียน:</label>
+              <select
+                v-model="selectedScheduleClassId"
+                class="text-xs border border-gray-300 rounded-lg px-3 py-1.5 bg-white font-medium focus:border-blue-500 focus:outline-none"
+              >
+                <option value="all">แสดงทุกห้องเรียน ({{ scheduleClasses.length }} ห้อง)</option>
+                <option v-for="c in scheduleClasses" :key="c.id" :value="c.id">
+                  {{ c.name }}
+                </option>
+              </select>
+            </div>
+
+            <div v-if="scheduleViewMode === 'teacher'" class="flex items-center gap-2">
+              <label class="text-xs font-semibold text-gray-700 whitespace-nowrap">เลือกอาจารย์:</label>
+              <select
+                v-model="selectedScheduleTeacherId"
+                class="text-xs border border-gray-300 rounded-lg px-3 py-1.5 bg-white font-medium focus:border-teal-500 focus:outline-none"
+              >
+                <option value="all">แสดงครูทุกคน ({{ scheduleTeachers.length }} ท่าน)</option>
+                <option v-for="t in scheduleTeachers" :key="t.id" :value="t.id">
+                  {{ t.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="text-xs text-gray-500 font-mono">
+              แบบตารางเรียนมาตรฐาน (5 วัน วันละ {{ periodsPerDaySetting }} คาบ)
+            </div>
+          </div>
+
+          <!-- Loading -->
+          <div v-if="loadingSchedules" class="py-16 text-center">
             <v-progress-circular indeterminate color="primary" />
+            <p class="text-xs text-gray-400 mt-2">กำลังโหลดตารางเรียน...</p>
           </div>
 
-          <div v-else-if="schedules.length > 0" class="overflow-x-auto border border-gray-100 rounded-xl">
-            <table class="w-full text-left text-sm border-collapse">
+          <!-- 1. Class View (ตารางเรียนรายห้องแบบดั้งเดิมตามภาพ) -->
+          <div v-else-if="schedules.length > 0 && scheduleViewMode === 'class'" class="space-y-6">
+            <div v-for="cls in displayedScheduleClasses" :key="cls.id">
+              <TimetableSheet
+                type="class"
+                :title="cls.name"
+                :subtitle="`ตารางเรียนโครงการ: ${project?.name || '-'} | ห้อง: ${cls.name}`"
+                :schedules="getSchedulesForClass(cls.id)"
+                :periods-per-day="periodsPerDaySetting"
+                :total-periods="totalPeriodsSetting"
+              />
+            </div>
+          </div>
+
+          <!-- 2. Teacher View (ตารางสอนรายครูแบบดั้งเดิมตามภาพ) -->
+          <div v-else-if="schedules.length > 0 && scheduleViewMode === 'teacher'" class="space-y-6">
+            <div v-for="t in displayedScheduleTeachers" :key="t.id">
+              <TimetableSheet
+                type="teacher"
+                :title="t.name"
+                :subtitle="`ตารางสอนครูผู้สอน | โครงการ: ${project?.name || '-'} | อาจารย์: ${t.name}`"
+                :schedules="getSchedulesForTeacher(t.id)"
+                :periods-per-day="periodsPerDaySetting"
+                :total-periods="totalPeriodsSetting"
+              />
+            </div>
+          </div>
+
+          <!-- 3. Matrix View: X = Class, Y = Period -->
+          <div v-else-if="schedules.length > 0 && scheduleViewMode === 'matrix'" class="overflow-x-auto border border-gray-200 rounded-2xl shadow-2xs bg-white">
+            <table class="w-full text-left text-xs border-collapse min-w-[700px]">
               <thead>
-                <tr class="bg-gray-50/70 border-b border-gray-200 text-gray-500 text-xs font-semibold uppercase">
-                  <th class="py-3 px-4 w-20">คาบเรียน</th>
-                  <th class="py-3 px-4">ชั้นเรียน</th>
+                <tr class="bg-gray-50 border-b border-gray-200 text-gray-600 font-semibold sticky top-0 z-10">
+                  <th class="py-3 px-3 w-28 text-center border-r border-gray-200 bg-gray-50">คาบเรียน / วัน</th>
+                  <th
+                    v-for="cls in scheduleClasses"
+                    :key="cls.id"
+                    class="py-3 px-3 text-center border-r border-gray-200 min-w-[170px]"
+                  >
+                    <div class="font-bold text-gray-900">{{ cls.name }}</div>
+                    <div class="text-[10px] text-gray-400 font-normal">Class ID: {{ cls.id }}</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                <template v-for="p in totalPeriodsSetting" :key="p">
+                  <!-- Day Separator Row (ทุก 8 คาบ) -->
+                  <tr v-if="(p - 1) % periodsPerDaySetting === 0" class="bg-blue-50/70 border-t-2 border-b border-blue-200">
+                    <td
+                      :colspan="scheduleClasses.length + 1"
+                      class="py-1.5 px-3 font-bold text-[11px] text-blue-900 tracking-wide"
+                    >
+                      <v-icon icon="mdi-calendar-today" size="13" class="mr-1 text-blue-600" />
+                      วัน{{ ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์'][Math.floor((p - 1) / periodsPerDaySetting)] || `ที่ ${Math.floor((p - 1) / periodsPerDaySetting) + 1}` }}
+                      (คาบ {{ p }} - {{ Math.min(p + periodsPerDaySetting - 1, totalPeriodsSetting) }})
+                    </td>
+                  </tr>
+
+                  <!-- Period Row -->
+                  <tr :class="[(p % 2 === 0 ? 'bg-gray-50/30' : 'bg-white'), 'hover:bg-blue-50/40 transition-colors']">
+                    <!-- Y Axis: Period -->
+                    <td class="py-2.5 px-3 text-center font-bold text-blue-700 border-r border-gray-200 bg-gray-50/50 whitespace-nowrap">
+                      คาบที่ {{ p }}
+                      <span class="block text-[10px] text-gray-400 font-normal">
+                        คาบย่อย {{ ((p - 1) % periodsPerDaySetting) + 1 }}
+                      </span>
+                    </td>
+
+                    <!-- X Axis: Class Cells -->
+                    <td
+                      v-for="cls in scheduleClasses"
+                      :key="cls.id"
+                      class="py-2 px-2.5 border-r border-gray-100 align-top"
+                    >
+                      <!-- When cell is booked: display Subject, Teacher, Room -->
+                      <div
+                        v-if="getCell(p, cls.id)"
+                        class="p-2 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50/60 border border-blue-200/80 shadow-2xs hover:shadow-xs transition-all"
+                      >
+                        <!-- Subject -->
+                        <div class="font-bold text-gray-900 leading-tight truncate text-xs flex items-center gap-1" :title="getCell(p, cls.id)?.subject_name">
+                          <v-icon icon="mdi-book-open-variant" size="13" class="text-blue-600 shrink-0" />
+                          <span class="truncate">{{ getCell(p, cls.id)?.subject_name || 'วิชาเรียน' }}</span>
+                        </div>
+
+                        <!-- Teacher -->
+                        <div class="text-[11px] text-gray-600 truncate mt-1 flex items-center gap-1" :title="getCell(p, cls.id)?.teacher_name">
+                          <v-icon icon="mdi-account-tie" size="12" class="text-indigo-500 shrink-0" />
+                          <span class="truncate">{{ getCell(p, cls.id)?.teacher_name || '-' }}</span>
+                        </div>
+
+                        <!-- Room Badge -->
+                        <div class="mt-1 flex items-center justify-between">
+                          <span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.2 rounded bg-white/90 text-gray-700 font-mono font-medium border border-gray-200">
+                            <v-icon icon="mdi-door-sliding" size="10" class="text-gray-400" />
+                            {{ getCell(p, cls.id)?.room_name || '-' }}
+                          </span>
+                          <span class="text-[9px] text-gray-400 font-mono">#{{ getCell(p, cls.id)?.id }}</span>
+                        </div>
+                      </div>
+
+                      <!-- Empty slot -->
+                      <div v-else class="h-14 flex items-center justify-center text-gray-300 text-[10px] border border-dashed border-gray-100 rounded-lg">
+                        ว่าง
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- List View: Table format -->
+          <div v-else-if="schedules.length > 0 && scheduleViewMode === 'list'" class="overflow-x-auto border border-gray-200 rounded-2xl shadow-2xs bg-white">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-gray-50 border-b border-gray-200 text-gray-500 font-semibold uppercase text-[11px]">
+                  <th class="py-3 px-4 w-24">คาบเรียน</th>
+                  <th class="py-3 px-4">ชั้นเรียน (c)</th>
                   <th class="py-3 px-4">รายวิชา</th>
-                  <th class="py-3 px-4">อาจารย์ผู้สอน</th>
-                  <th class="py-3 px-4">ห้องเรียน</th>
+                  <th class="py-3 px-4">อาจารย์ (t)</th>
+                  <th class="py-3 px-4">ห้องเรียน (r)</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100">
                 <tr v-for="s in schedules" :key="s.id" class="hover:bg-blue-50/30 transition-colors">
                   <td class="py-3 px-4 font-bold text-blue-600">คาบที่ {{ s.period }}</td>
                   <td class="py-3 px-4 font-semibold text-gray-800">{{ s.class_name || '-' }}</td>
-                  <td class="py-3 px-4 text-gray-700">{{ s.subject_name || '-' }}</td>
-                  <td class="py-3 px-4 text-gray-600 text-xs">{{ s.teacher_name || '-' }}</td>
+                  <td class="py-3 px-4 text-gray-800 font-medium">{{ s.subject_name || '-' }}</td>
+                  <td class="py-3 px-4 text-gray-600">{{ s.teacher_name || '-' }}</td>
                   <td class="py-3 px-4">
-                    <span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs font-mono">
+                    <span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs font-mono font-medium">
                       {{ s.room_name || '-' }}
                     </span>
                   </td>
@@ -1657,19 +2010,183 @@ onMounted(async () => {
             </table>
           </div>
 
-          <div v-else class="py-12 text-center border border-dashed border-gray-200 rounded-xl">
-            <v-icon icon="mdi-robot-confused-outline" size="44" class="text-gray-300 mb-2" />
-            <h4 class="text-sm font-semibold text-gray-700">ยังไม่มีผลตารางเรียนจาก AI ในโครงการนี้</h4>
-            <p class="text-xs text-gray-400 mt-0.5">เมื่อระบบ AI Agent ประมวลผลการจัดตาราง ข้อมูลคาบสอนจะปรากฏที่นี่</p>
+          <!-- Empty State -->
+          <div v-else class="py-16 text-center border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
+            <div class="w-16 h-16 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-3 shadow-xs">
+              <v-icon icon="mdi-calendar-clock" size="34" />
+            </div>
+            <h4 class="text-sm font-bold text-gray-800">ยังไม่มีตารางเรียนในโครงการนี้</h4>
+            <p class="text-xs text-gray-400 mt-1 max-w-md mx-auto">
+              ระบบจะจัดสรรวิชา, อาจารย์ (t), และห้องเรียน (r) ลงในแต่ละชั้นเรียน (c) และคาบ (p) ให้อัตโนมัติ โดยป้องกันไม่ให้ครูและห้องซ้ำกันในคาบเดียวกัน
+            </p>
+            <v-btn
+              color="primary"
+              size="small"
+              prepend-icon="mdi-auto-fix"
+              class="mt-4 rounded-xl text-none font-semibold shadow-sm"
+              :loading="isGeneratingSchedule"
+              @click="confirmGenerateDialog = true"
+            >
+              จัดตารางเรียนอัตโนมัติเดี๋ยวนี้
+            </v-btn>
           </div>
         </div>
       </div>
     </v-card>
 
+    <!-- Dialog ยืนยันการจัดตารางเรียน -->
+    <v-dialog v-model="confirmGenerateDialog" max-width="480">
+      <v-card class="rounded-2xl pa-6 bg-white shadow-xl">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+            <v-icon icon="mdi-auto-fix" size="22" />
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-gray-900 leading-tight">จัดตารางเรียนอัตโนมัติ</h3>
+            <p class="text-xs text-gray-400">อัลกอริทึมจัดตารางแบบไร้การซ้ำซ้อน</p>
+          </div>
+        </div>
 
+        <p class="text-xs text-gray-600 mb-4 leading-relaxed">
+          ระบบจะประมวลผลจัดสรรคาบเรียนของทุกชั้นเรียนในโครงการนี้:
+        </p>
 
+        <!-- Rule Checklist -->
+        <div class="space-y-2 mb-4 p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs text-gray-700">
+          <div class="flex items-start gap-2">
+            <v-icon icon="mdi-check-circle" size="14" class="text-green-600 mt-0.5" />
+            <span>ในคาบเดียวกัน (p) ครู (t) หรือห้อง (r) จะ<strong>ไม่ถูกใช้ซ้ำ</strong>ในสองห้องพร้อมกัน</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <v-icon icon="mdi-check-circle" size="14" class="text-green-600 mt-0.5" />
+            <span>วิชาเดียวกันของชั้นเรียนเดียวกันใช้<strong>ครูคนเดิม</strong></span>
+          </div>
+          <div class="flex items-start gap-2">
+            <v-icon icon="mdi-check-circle" size="14" class="text-green-600 mt-0.5" />
+            <span>เลือกครูและห้องที่มีคะแนน Expert สูงที่สุดก่อน</span>
+          </div>
+        </div>
 
-    <!-- 1. Modal: สร้างแผนการสอนใหม่ (ใส่แค่ชื่อแผน แล้วสร้างได้เลย) -->
+        <!-- Warning if schedules already exist -->
+        <v-alert
+          v-if="schedules.length > 0"
+          type="warning"
+          density="compact"
+          variant="tonal"
+          class="mb-4 text-xs rounded-xl"
+        >
+          โครงการนี้มีตารางเดิมอยู่แล้ว <strong>{{ schedules.length }} คาบ</strong> การจัดใหม่จะลบตารางเดิมทั้งหมดและแทนที่ด้วยตารางใหม่
+        </v-alert>
+
+        <!-- Period Settings -->
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div>
+            <label class="block text-[11px] font-semibold text-gray-700 mb-1">จำนวนคาบทั้งหมด</label>
+            <input
+              v-model.number="totalPeriodsSetting"
+              type="number"
+              min="8"
+              max="60"
+              class="w-full px-3 py-1.5 text-xs bg-white border border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-gray-700 mb-1">คาบต่อวัน</label>
+            <input
+              v-model.number="periodsPerDaySetting"
+              type="number"
+              min="4"
+              max="12"
+              class="w-full px-3 py-1.5 text-xs bg-white border border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+          <v-btn variant="text" size="small" class="rounded-lg text-none" @click="confirmGenerateDialog = false">
+            ยกเลิก
+          </v-btn>
+          <v-btn
+            color="primary"
+            size="small"
+            class="rounded-lg text-none font-semibold px-4"
+            :loading="isGeneratingSchedule"
+            @click="triggerGenerateSchedule"
+          >
+            ยืนยันและเริ่มจัดตาราง
+          </v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
+
+    <!-- Dialog ยืนยันการล้างตาราง -->
+    <v-dialog v-model="confirmClearDialog" max-width="400">
+      <v-card class="rounded-2xl pa-6 bg-white shadow-xl">
+        <h3 class="font-bold text-base text-gray-900 mb-2">ยืนยันการล้างตารางเรียน?</h3>
+        <p class="text-xs text-gray-500 mb-4 leading-relaxed">
+          ตารางเรียนทั้งหมดจำนวน {{ schedules.length }} คาบ ในโครงการนี้จะถูกลบออกถาวร คุณสามารถกดจัดใหม่ได้ตลอดเวลา
+        </p>
+        <div class="flex items-center justify-end gap-2">
+          <v-btn variant="text" size="small" class="rounded-lg text-none" @click="confirmClearDialog = false">
+            ยกเลิก
+          </v-btn>
+          <v-btn
+            color="error"
+            size="small"
+            class="rounded-lg text-none font-semibold"
+            :loading="isClearingSchedule"
+            @click="triggerClearSchedule"
+          >
+            ล้างตารางทั้งหมด
+          </v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
+
+    <!-- Dialog ผลลัพธ์การจัดตารางเรียน -->
+    <v-dialog v-model="scheduleResultDialog" max-width="500">
+      <v-card class="rounded-2xl pa-6 bg-white shadow-xl">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+            <v-icon icon="mdi-check-decagram" size="24" />
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-gray-900 leading-tight">จัดตารางเรียนเรียบร้อยแล้ว</h3>
+            <p class="text-xs text-green-600 font-medium">บันทึกข้อมูลเข้าสู่ฐานข้อมูลสำเร็จ</p>
+          </div>
+        </div>
+
+        <div class="p-3 bg-gray-50 rounded-xl border border-gray-200 mb-4 space-y-1.5 text-xs">
+          <div class="flex justify-between">
+            <span class="text-gray-500">คาบเรียนที่จัดได้สำเร็จ:</span>
+            <span class="font-bold text-blue-600">{{ scheduleResultData?.totalPlaced || 0 }} คาบ</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">การตรวจสอบความถูกต้อง:</span>
+            <span class="font-semibold text-green-600">ผ่านเงื่อนไข ไม่มีคาบซ้อน</span>
+          </div>
+        </div>
+
+        <!-- รายการที่ลงไม่ได้ถ้ามี -->
+        <div v-if="scheduleResultData?.unplacedLessons && scheduleResultData.unplacedLessons.length > 0" class="mb-4">
+          <h4 class="text-xs font-bold text-amber-700 mb-1 flex items-center gap-1">
+            <v-icon icon="mdi-alert" size="14" />
+            รายการที่ลงไม่ครบ ({{ scheduleResultData.unplacedLessons.length }} รายการ):
+          </h4>
+          <div class="max-h-36 overflow-y-auto space-y-1 p-2 bg-amber-50 rounded-lg border border-amber-200 text-[11px] text-amber-900">
+            <div v-for="(u, idx) in scheduleResultData.unplacedLessons" :key="idx">
+              • <strong>{{ u.class_name }}</strong>: วิชา {{ u.subject_name }} (ขาด {{ u.unplacedHours || u.hours }} คาบ) - {{ u.reason }}
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end">
+          <v-btn color="primary" size="small" class="rounded-lg text-none px-4" @click="scheduleResultDialog = false">
+            ปิดหน้าต่าง
+          </v-btn>
+        </div>
+      </v-card>
+    </v-dialog><!-- 1. Modal: สร้างแผนการสอนใหม่ (ใส่แค่ชื่อแผน แล้วสร้างได้เลย) -->
     <v-dialog v-model="addPlanDialog" max-width="450">
       <v-card class="rounded-2xl pa-6 bg-white shadow-lg">
         <h3 class="font-bold text-base text-gray-800 mb-1">สร้างแผนการสอนใหม่</h3>

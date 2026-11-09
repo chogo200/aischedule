@@ -337,8 +337,9 @@ exports.getSchedules = async (projectId) => {
       's.class_id',
       'c.name as class_name',
       's.teacher_id',
-      'u.name_th as teacher_name',
+      db.raw('COALESCE(u.name_th, t.name) as teacher_name'),
       's.subject_id',
+      'sub.code as subject_code',
       'sub.name as subject_name',
       's.room_id',
       'r.name as room_name'
