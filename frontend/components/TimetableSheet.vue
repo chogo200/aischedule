@@ -34,7 +34,16 @@
         </span>
         <button
           type="button"
-          class="no-print inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 font-medium transition shadow-2xs"
+          class="no-print inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 font-medium transition shadow-2xs cursor-pointer"
+          title="ดาวน์โหลดตารางเป็นไฟล์ CSV"
+          @click="downloadCSV"
+        >
+          <v-icon icon="mdi-file-delimited-outline" size="15" class="text-emerald-600" />
+          <span>CSV</span>
+        </button>
+        <button
+          type="button"
+          class="no-print inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 font-medium transition shadow-2xs cursor-pointer"
           @click="printTable"
         >
           <v-icon icon="mdi-printer-outline" size="15" />
@@ -43,20 +52,33 @@
       </div>
     </div>
 
-    <!-- ตัวตารางเรียน พร้อมรวมวิชาต่อเนื่อง (Colspan Merge) และสไตล์มินิมอลสบายตา -->
+    <!-- ตัวตารางเรียน พร้อมช่องขนาดเท่ากันเป๊ะทุกคอลัมน์ -->
     <div class="overflow-x-auto">
-      <table class="timetable-table w-full border-collapse text-center min-w-[960px]">
+      <table class="timetable-table w-full border-collapse text-center table-fixed min-w-[960px]">
+        <!-- กำหนด colgroup ให้ 10 คอลัมน์กว้าง 10% เท่ากันเป๊ะในระดับเบราว์เซอร์ -->
+        <colgroup>
+          <col class="w-[10%]">
+          <col class="w-[10%]">
+          <col class="w-[10%]">
+          <col class="w-[10%]">
+          <col class="w-[10%]">
+          <col class="w-[10%]">
+          <col class="w-[10%]">
+          <col class="w-[10%]">
+          <col class="w-[10%]">
+          <col class="w-[10%]">
+        </colgroup>
         <thead>
           <!-- แถวที่ 1: แถบเวลา -->
           <tr class="bg-slate-100/80 text-slate-600 text-xs font-semibold border-b border-slate-200">
-            <th class="border-r border-b border-slate-200 py-2.5 px-3 w-28 bg-slate-200/50">
+            <th class="border-r border-b border-slate-200 py-2.5 px-3 bg-slate-200/50">
               เวลา
             </th>
             <th
               v-for="time in periodTimes"
               :key="time.period"
               class="border-r border-b border-slate-200 py-2.5 px-1 font-mono text-[11px]"
-              :class="{ 'bg-amber-50/70 font-bold text-amber-900 w-14': time.isLunch }"
+              :class="{ 'bg-amber-50/70 font-bold text-amber-900': time.isLunch }"
             >
               {{ time.label }}
             </th>
@@ -101,33 +123,33 @@
               <!-- กรณีพักเที่ยง -->
               <td
                 v-if="cell.isLunch"
-                class="border-r border-slate-200 py-3 px-1 bg-amber-50/40 text-amber-800 select-none align-middle"
+                class="border-r border-slate-200 py-2 px-1 bg-amber-50/40 text-amber-800 select-none align-middle h-24"
               >
                 <div class="flex items-center justify-center h-full">
-                  <span class="inline-block px-1.5 py-0.5 rounded text-[11px] font-bold bg-amber-100/80 text-amber-900 border border-amber-200/80">
+                  <span class="inline-block px-1.5 py-0.5 rounded text-[11px] font-bold bg-amber-100/80 text-amber-900 border border-amber-200/80 shadow-2xs">
                     พัก
                   </span>
                 </div>
               </td>
 
-              <!-- กรณีมีวิชาเรียน (รวมคาบต่อเนื่องด้วย colspan) -->
+              <!-- กรณีมีวิชาเรียน (รวมเซลล์ต่อเนื่องด้วย colspan) -->
               <td
                 v-else-if="cell.slot"
                 :colspan="cell.span"
                 class="border-r border-slate-200 p-1.5 align-middle h-24"
               >
                 <div
-                  class="h-full flex flex-col justify-between items-center rounded-xl p-2 transition-all duration-200 shadow-2xs hover:shadow-sm"
+                  class="h-full w-full flex flex-col justify-between items-center rounded-xl p-2 transition-all duration-200 shadow-2xs hover:shadow-sm"
                   :class="getSubjectCardStyle(cell.slot)"
                 >
-                  <!-- หัวการ์ด: รหัสวิชา + Badge จำนวนคาบ (ถ้ามากกว่า 1 คาบ) -->
+                  <!-- หัวการ์ด: รหัสวิชา + Badge จำนวนคาบ (ถ้าเรียนติดกันมากกว่า 1 คาบ) -->
                   <div class="w-full flex items-center justify-between gap-1">
                     <span class="font-mono font-bold text-xs tracking-tight">
                       {{ cell.slot.subject_code || 'วิชา' }}
                     </span>
                     <span
                       v-if="cell.span > 1"
-                      class="px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-white/80 border shadow-2xs font-mono"
+                      class="px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-white/80 border shadow-2xs font-mono text-slate-700"
                     >
                       {{ cell.span }} คาบ
                     </span>
@@ -393,6 +415,66 @@ const subjectSummary = computed(() => {
 function printTable() {
   window.print()
 }
+
+function downloadCSV() {
+  const headers = [
+    'วัน',
+    'คาบที่',
+    'เวลา',
+    'รหัสวิชา',
+    'ชื่อวิชา',
+    props.type === 'class' ? 'ผู้สอน' : 'ห้องเรียน/กลุ่มเรียน',
+    'ห้องเรียน'
+  ]
+
+  const rows = []
+  days.forEach((day, dayIndex) => {
+    for (let p = 1; p <= props.periodsPerDay; p++) {
+      const globalPeriod = dayIndex * props.periodsPerDay + p
+      const slot = props.schedules.find(s => s.period === globalPeriod)
+      const pTime = periodTimes.find(t => t.slotIndex === p)?.label || ''
+
+      if (slot) {
+        rows.push([
+          day.name,
+          `คาบ ${p}`,
+          pTime,
+          slot.subject_code || '',
+          slot.subject_name || '',
+          props.type === 'class' ? (slot.teacher_name || '') : (slot.class_name || ''),
+          slot.room_name || ''
+        ])
+      } else {
+        rows.push([
+          day.name,
+          `คาบ ${p}`,
+          pTime,
+          '-',
+          '-',
+          '-',
+          '-'
+        ])
+      }
+    }
+  })
+
+  // สร้างเนื้อหา CSV พร้อม BOM (\uFEFF) เพื่อรองรับภาษาไทยใน Microsoft Excel
+  const csvContent = [
+    headers.map(h => `"${h.replace(/"/g, '""')}"`).join(','),
+    ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+  ].join('\r\n')
+
+  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  const filename = `${props.title.replace(/[\\/:*?"<>|]/g, '_')}_ตารางสอน.csv`
+  link.setAttribute('href', url)
+  link.setAttribute('download', filename)
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
 </script>
 
 <style scoped>
@@ -400,7 +482,21 @@ function printTable() {
   font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-.timetable-table th,
+.timetable-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.timetable-table col {
+  width: 10% !important;
+}
+
+.timetable-table th {
+  border-color: #e2e8f0;
+  width: 10% !important;
+  max-width: 10% !important;
+}
+
 .timetable-table td {
   border-color: #e2e8f0;
 }
