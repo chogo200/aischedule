@@ -83,6 +83,7 @@ async function sendMessage() {
       role: 'assistant',
       text: data.reply || 'ดำเนินการเรียบร้อยแล้วครับ',
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      modelUsed: data.modelUsed,
       logs: data.logs || []
     })
   } catch (err) {
@@ -273,8 +274,12 @@ async function confirmImport(itemData) {
         :key="msg.id"
         :class="['flex flex-col', msg.role === 'user' ? 'items-end' : 'items-start']"
       >
-        <div class="text-[10px] text-gray-400 mb-0.5 px-1">
-          {{ msg.role === 'user' ? 'คุณ' : 'AI Agent' }} • {{ msg.time }}
+        <div class="text-[10px] text-gray-400 mb-0.5 px-1 flex items-center gap-1.5">
+          <span>{{ msg.role === 'user' ? 'คุณ' : 'AI Agent' }}</span>
+          <span v-if="msg.modelUsed" class="px-1 py-0.2 bg-purple-50 text-purple-600 rounded text-[9px] font-medium border border-purple-100">
+            {{ msg.modelUsed }}
+          </span>
+          <span>• {{ msg.time }}</span>
         </div>
 
         <!-- Message Bubble -->

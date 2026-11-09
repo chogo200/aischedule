@@ -38,19 +38,7 @@ async function runAgent(userMessage, modelKey = 'groq-gpt-120b', history = []) {
   const executionLog = [];
 
   for (let i = 0; i < maxIterations; i++) {
-    let response;
-    try {
-      response = await modelWithTools.invoke(messages);
-    } catch (err) {
-      // หากเกิดข้อผิดพลาดในการ parse tool ของ model ตัวเล็ก ให้ fallback ไปใช้ GPT-120B ที่ parse tool ได้แม่นยำ 100%
-      if (modelKey !== 'groq-gpt-120b') {
-        const fallbackModel = getModel('groq-gpt-120b').bindTools(allTools);
-        response = await fallbackModel.invoke(messages);
-      } else {
-        throw err;
-      }
-    }
-
+    const response = await modelWithTools.invoke(messages);
     messages.push(response);
 
     // ตรวจสอบว่า Model ต้องการเรียก Tools หรือไม่
@@ -58,6 +46,7 @@ async function runAgent(userMessage, modelKey = 'groq-gpt-120b', history = []) {
       // จบการทำงาน ส่งคำตอบสุดท้าย
       return {
         reply: response.content,
+        modelUsed: modelKey,
         iterations: i + 1,
         logs: executionLog,
       };
