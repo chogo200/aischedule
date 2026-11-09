@@ -1,0 +1,1154 @@
+[
+  {
+    "id": 13188,
+    "period": 1,
+    "class_id": 20,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13189,
+    "period": 1,
+    "class_id": 21,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13190,
+    "period": 1,
+    "class_id": 22,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13191,
+    "period": 1,
+    "class_id": 23,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13192,
+    "period": 2,
+    "class_id": 20,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13193,
+    "period": 2,
+    "class_id": 21,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13194,
+    "period": 2,
+    "class_id": 22,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13195,
+    "period": 2,
+    "class_id": 23,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13196,
+    "period": 3,
+    "class_id": 20,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13197,
+    "period": 3,
+    "class_id": 21,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13198,
+    "period": 3,
+    "class_id": 22,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13199,
+    "period": 3,
+    "class_id": 23,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13200,
+    "period": 4,
+    "class_id": 20,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13201,
+    "period": 4,
+    "class_id": 21,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13202,
+    "period": 4,
+    "class_id": 22,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13203,
+    "period": 4,
+    "class_id": 23,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13204,
+    "period": 5,
+    "class_id": 20,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13205,
+    "period": 5,
+    "class_id": 21,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13206,
+    "period": 5,
+    "class_id": 22,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13207,
+    "period": 5,
+    "class_id": 23,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13208,
+    "period": 6,
+    "class_id": 20,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13209,
+    "period": 6,
+    "class_id": 21,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13210,
+    "period": 6,
+    "class_id": 22,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13211,
+    "period": 6,
+    "class_id": 23,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13212,
+    "period": 7,
+    "class_id": 21,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13213,
+    "period": 7,
+    "class_id": 22,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13214,
+    "period": 8,
+    "class_id": 21,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13215,
+    "period": 8,
+    "class_id": 22,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13216,
+    "period": 9,
+    "class_id": 20,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13217,
+    "period": 9,
+    "class_id": 21,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13218,
+    "period": 9,
+    "class_id": 22,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13219,
+    "period": 9,
+    "class_id": 23,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13220,
+    "period": 10,
+    "class_id": 20,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13221,
+    "period": 10,
+    "class_id": 21,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13222,
+    "period": 10,
+    "class_id": 22,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13223,
+    "period": 10,
+    "class_id": 23,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13224,
+    "period": 11,
+    "class_id": 20,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13225,
+    "period": 11,
+    "class_id": 21,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13226,
+    "period": 11,
+    "class_id": 22,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13227,
+    "period": 11,
+    "class_id": 23,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13228,
+    "period": 12,
+    "class_id": 20,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13229,
+    "period": 12,
+    "class_id": 21,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13230,
+    "period": 12,
+    "class_id": 22,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13231,
+    "period": 12,
+    "class_id": 23,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13232,
+    "period": 13,
+    "class_id": 20,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13233,
+    "period": 13,
+    "class_id": 21,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13234,
+    "period": 13,
+    "class_id": 22,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13235,
+    "period": 13,
+    "class_id": 23,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13236,
+    "period": 14,
+    "class_id": 20,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13237,
+    "period": 14,
+    "class_id": 21,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13238,
+    "period": 14,
+    "class_id": 22,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13239,
+    "period": 14,
+    "class_id": 23,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13240,
+    "period": 15,
+    "class_id": 20,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13241,
+    "period": 16,
+    "class_id": 20,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13242,
+    "period": 17,
+    "class_id": 20,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13243,
+    "period": 17,
+    "class_id": 21,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13244,
+    "period": 17,
+    "class_id": 22,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13245,
+    "period": 17,
+    "class_id": 23,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13246,
+    "period": 18,
+    "class_id": 20,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13247,
+    "period": 18,
+    "class_id": 21,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13248,
+    "period": 18,
+    "class_id": 22,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13249,
+    "period": 18,
+    "class_id": 23,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13250,
+    "period": 19,
+    "class_id": 20,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13251,
+    "period": 19,
+    "class_id": 21,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13252,
+    "period": 19,
+    "class_id": 22,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13253,
+    "period": 19,
+    "class_id": 23,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13254,
+    "period": 20,
+    "class_id": 20,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13255,
+    "period": 20,
+    "class_id": 21,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13256,
+    "period": 20,
+    "class_id": 22,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13257,
+    "period": 20,
+    "class_id": 23,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13258,
+    "period": 21,
+    "class_id": 20,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13259,
+    "period": 21,
+    "class_id": 21,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13260,
+    "period": 21,
+    "class_id": 22,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13261,
+    "period": 21,
+    "class_id": 23,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13262,
+    "period": 22,
+    "class_id": 20,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13263,
+    "period": 22,
+    "class_id": 21,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13264,
+    "period": 22,
+    "class_id": 22,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13265,
+    "period": 22,
+    "class_id": 23,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13266,
+    "period": 25,
+    "class_id": 20,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13267,
+    "period": 25,
+    "class_id": 21,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13268,
+    "period": 25,
+    "class_id": 22,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13269,
+    "period": 25,
+    "class_id": 23,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13270,
+    "period": 26,
+    "class_id": 20,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13271,
+    "period": 26,
+    "class_id": 21,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13272,
+    "period": 26,
+    "class_id": 22,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13273,
+    "period": 26,
+    "class_id": 23,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13274,
+    "period": 27,
+    "class_id": 20,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13275,
+    "period": 27,
+    "class_id": 21,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13276,
+    "period": 27,
+    "class_id": 22,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13277,
+    "period": 27,
+    "class_id": 23,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13278,
+    "period": 28,
+    "class_id": 20,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13279,
+    "period": 28,
+    "class_id": 21,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13280,
+    "period": 28,
+    "class_id": 22,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13281,
+    "period": 28,
+    "class_id": 23,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13282,
+    "period": 29,
+    "class_id": 20,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13283,
+    "period": 29,
+    "class_id": 21,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13284,
+    "period": 29,
+    "class_id": 22,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13285,
+    "period": 29,
+    "class_id": 23,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13286,
+    "period": 30,
+    "class_id": 20,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13287,
+    "period": 30,
+    "class_id": 21,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13288,
+    "period": 30,
+    "class_id": 22,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13289,
+    "period": 30,
+    "class_id": 23,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13290,
+    "period": 33,
+    "class_id": 20,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13291,
+    "period": 33,
+    "class_id": 21,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13292,
+    "period": 33,
+    "class_id": 22,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13293,
+    "period": 33,
+    "class_id": 23,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13294,
+    "period": 34,
+    "class_id": 20,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13295,
+    "period": 34,
+    "class_id": 21,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13296,
+    "period": 34,
+    "class_id": 22,
+    "teacher_id": 52,
+    "subject_id": 90,
+    "project_id": 8,
+    "room_id": 25
+  },
+  {
+    "id": 13297,
+    "period": 34,
+    "class_id": 23,
+    "teacher_id": 49,
+    "subject_id": 87,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13298,
+    "period": 35,
+    "class_id": 20,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13299,
+    "period": 35,
+    "class_id": 21,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13300,
+    "period": 35,
+    "class_id": 22,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13301,
+    "period": 35,
+    "class_id": 23,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13302,
+    "period": 36,
+    "class_id": 20,
+    "teacher_id": 46,
+    "subject_id": 84,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13303,
+    "period": 36,
+    "class_id": 21,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13304,
+    "period": 36,
+    "class_id": 22,
+    "teacher_id": 51,
+    "subject_id": 89,
+    "project_id": 8,
+    "room_id": 24
+  },
+  {
+    "id": 13305,
+    "period": 36,
+    "class_id": 23,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 22
+  },
+  {
+    "id": 13306,
+    "period": 37,
+    "class_id": 20,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13307,
+    "period": 37,
+    "class_id": 21,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13308,
+    "period": 37,
+    "class_id": 22,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13309,
+    "period": 37,
+    "class_id": 23,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13310,
+    "period": 38,
+    "class_id": 20,
+    "teacher_id": 50,
+    "subject_id": 88,
+    "project_id": 8,
+    "room_id": 23
+  },
+  {
+    "id": 13311,
+    "period": 38,
+    "class_id": 21,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 21
+  },
+  {
+    "id": 13312,
+    "period": 38,
+    "class_id": 22,
+    "teacher_id": 47,
+    "subject_id": 85,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13313,
+    "period": 38,
+    "class_id": 23,
+    "teacher_id": 45,
+    "subject_id": 83,
+    "project_id": 8,
+    "room_id": 19
+  },
+  {
+    "id": 13314,
+    "period": 39,
+    "class_id": 23,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 20
+  },
+  {
+    "id": 13315,
+    "period": 40,
+    "class_id": 23,
+    "teacher_id": 48,
+    "subject_id": 86,
+    "project_id": 8,
+    "room_id": 20
+  }
+]
